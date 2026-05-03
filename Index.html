@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio — BTS SIO SISR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+           RESET & VARIABLES
+        ═══════════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-card-hover: #1a1a1a;
+            --accent: #c0c0c0;
+            --accent-bright: #ffffff;
+            --accent-subtle: rgba(255,255,255,0.06);
+            --accent-glow: rgba(255,255,255,0.08);
+            --text-primary: #f0f0f0;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.15);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-6: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: #333 #0a0a0a; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        /* ═══════════════════════════════════════════
+           CURSOR GLOW (Desktop)
+        ═══════════════════════════════════════════ */
+        .cursor-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+        }
+
+        /* ═══════════════════════════════════════════
+           NAVIGATION
+        ═══════════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 40px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10,10,10,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        nav.scrolled { background: rgba(10,10,10,0.95); }
+
+        .nav-logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .nav-logo span { color: var(--text-muted); font-weight: 400; }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: var(--transition);
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        .nav-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        /* ═══════════════════════════════════════════
+           HERO
+        ═══════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 120px 40px 80px;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+        }
+
+        .hero-content { text-align: center; position: relative; z-index: 2; max-width: 900px; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #43e97b;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .line { display: block; }
+        .hero h1 .line:last-child {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            font-weight: 300;
+        }
+
+        .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(255,255,255,0.15); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .btn-outline:hover { border-color: var(--text-secondary); background: var(--accent-subtle); }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .scroll-indicator .line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-muted), transparent);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* ═══════════════════════════════════════════
+           SECTIONS — COMMON
+        ═══════════════════════════════════════════ */
+        section { padding: 120px 40px; position: relative; }
+
+        .section-header {
+            max-width: 700px;
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* ═══════════════════════════════════════════
+           ABOUT / PROFIL
+        ═══════════════════════════════════════════ */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 300;
+            font-size: 1.05rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+        .stat-number { font-size: 2.5rem; font-weight: 800; letter-spacing: -2px; }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+
+        .about-info {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        .info-item:hover { border-color: var(--border-hover); }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .info-value { font-size: 0.95rem; font-weight: 500; margin-top: 2px; }
+
+        /* ═══════════════════════════════════════════
+           PARCOURS / TIMELINE
+        ═══════════════════════════════════════════ */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--border), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 48px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            background: var(--bg-primary);
+            transition: var(--transition);
+        }
+        .timeline-item:hover::before { border-color: var(--text-primary); background: var(--text-primary); }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .timeline-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .timeline-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .tag {
+            padding: 4px 12px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* ═══════════════════════════════════════════
+           PROJETS
+        ═══════════════════════════════════════════ */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .project-card.visible { opacity: 1; transform: translateY(0); }
+        .project-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+
+        .project-header {
+            padding: 32px 28px 0;
+            position: relative;
+        }
+
+        .project-accent {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .project-context {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .project-body { padding: 20px 28px 28px; }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .project-details { margin-bottom: 20px; }
+
+        .project-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .project-detail-row:last-child { border-bottom: none; }
+        .project-detail-label { color: var(--text-muted); }
+        .project-detail-value { color: var(--text-primary); font-weight: 500; }
+
+        .project-reflexion {
+            padding: 16px;
+            background: var(--accent-subtle);
+            border-left: 3px solid rgba(255,255,255,0.2);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-top: 16px;
+        }
+
+        .project-reflexion-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .project-reflexion p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .project-bilan {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+
+        .project-bilan-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .project-bilan p { color: var(--text-secondary); line-height: 1.6; }
+
+        /* ═══════════════════════════════════════════
+           MODALES PROJETS
+        ═══════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: var(--border-hover);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            padding: 40px 40px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-accent {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-context {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .modal-body {
+            padding: 24px 40px;
+        }
+
+        .modal-section {
+            margin-bottom: 32px;
+        }
+
+        .modal-section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-section-title::before {
+            content: '';
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .modal-section-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .modal-section-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .modal-section-content li {
+            margin: 4px 0;
+        }
+
+        /* Compétences dans la modale */
+        .competences-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .competence-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .competence-tag .code {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Section Documents */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .document-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .document-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .document-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .document-type {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .document-add {
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .document-add:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Modal footer */
+        .modal-footer {
+            padding: 20px 40px 40px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .modal-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 0.75rem;
+        }
+
+        /* Bouton Détails dans les cartes */
+        .project-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-details {
+            flex: 1;
+            justify-content: center;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-details:hover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        /* Responsive modal */
+        @media (max-width: 768px) {
+            .modal-header, .modal-body, .modal-footer {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+            .modal-title { font-size: 1.4rem; }
+            .documents-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ═══════════════════════════════════════════
+           STAGES
+        ═══════════════════════════════════════════ */
+        .stages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .stage-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .stage-card.visible { opacity: 1; transform: translateY(0); }
+        .stage-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+
+        .stage-year {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .stage-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+        .stage-company { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 16px; }
+        .stage-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; }
+        .stage-tasks { margin-top: 16px; }
+        .stage-task {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .stage-task::before {
+            content: '▹';
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 1px;
+        }
+
+        /* ═══════════════════════════════════════════
+           FUTURES ÉTUDES
+        ═══════════════════════════════════════════ */
+        .futures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .future-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .future-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+
+        .future-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .future-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .future-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .future-school { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
+        .future-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+        .future-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+
+        /* ═══════════════════════════════════════════
+           CERTIFICATIONS
+        ═══════════════════════════════════════════ */
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .cert-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .cert-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+        .cert-icon { font-size: 2rem; margin-bottom: 12px; }
+        .cert-name { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+        .cert-org { font-size: 0.8rem; color: var(--text-muted); }
+        .cert-status {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .cert-status.obtained { background: rgba(67,233,123,0.1); color: #43e97b; }
+        .cert-status.progress { background: rgba(250,112,154,0.1); color: #fa709a; }
+        .cert-status.planned { background: rgba(79,172,254,0.1); color: #4facfe; }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════ */
+        footer {
+            padding: 60px 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links { display: flex; justify-content: center; gap: 32px; margin-top: 20px; }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ═══════════════════════════════════════════
+           ANIMATIONS
+        ═══════════════════════════════════════════ */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        .fade-in-delay-1 { transition-delay: 0.1s; }
+        .fade-in-delay-2 { transition-delay: 0.2s; }
+        .fade-in-delay-3 { transition-delay: 0.3s; }
+        .fade-in-delay-4 { transition-delay: 0.4s; }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════ */
+        @media (max-width: 968px) {
+            section { padding: 80px 24px; }
+            nav { padding: 0 24px; }
+            .about-grid { grid-template-columns: 1fr; gap: 40px; }
+            .stages-grid { grid-template-columns: 1fr; }
+            .hero { padding: 120px 24px 80px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: rgba(10,10,10,0.98);
+                backdrop-filter: blur(20px);
+                padding: 24px;
+                gap: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-toggle { display: flex; }
+            .hero h1 { letter-spacing: -1.5px; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .about-stats { grid-template-columns: 1fr; }
+            .futures-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ═══════════════════════════════════════════
+           LOADER
+        ═══════════════════════════════════════════ */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loader.hidden { opacity: 0; visibility: hidden; }
+        .loader-bar {
+            width: 120px;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--text-primary);
+            border-radius: 2px;
+            animation: load 1.2s ease forwards;
+        }
+        @keyframes load {
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader">
+        <div class="loader-bar">
+            <div class="loader-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- CURSOR GLOW -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="nav-logo">PORTFOLIO <span>/ SISR</span></div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">Profil</a></li>
+            <li><a href="#parcours">Parcours</a></li>
+            <li><a href="#projets">Projets</a></li>
+            <li><a href="#stages">Stages</a></li>
+            <li><a href="#futurs">Futurs</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+        </ul>
+        <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                A la recherche d'une Alternance - pour une 3ème année d'études
+            </div>
+            <h1>
+                <span class="line">Étudiant</span>
+                <span class="line">BTS SIO</span>
+                <span class="line">SISR</span>
+            </h1>
+            <p class="hero-sub">
+                Passionné par l'administration réseau, la sécurité informatique et la gestion de parc.
+                En 2ème année de BTS SIO option SISR, je prépare mon entrée en 3ème année d'études.
+            </p>
+            <div class="hero-cta">
+                <a href="#projets" class="btn btn-primary">Voir mes projets</a>
+                <a href="#parcours" class="btn btn-outline">Mon parcours</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="line"></div>
+        </div>
+    </section>
+
+    <!-- ABOUT / PROFIL -->
+    <section id="about">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Profil</div>
+                <h2 class="section-title">Qui suis-je ?</h2>
+                <p class="section-desc">
+                    Étudiant motivé et curieux, je développe mes compétences en infrastructure réseau
+                    et systèmes à travers mes projets académiques et mes stages.
+                </p>
+            </div>
+            <div class="about-grid">
+                <div class="about-text fade-in">
+                    <p>
+                        Actuellement en deuxième année de <strong>BTS SIO option SISR</strong> (Services Informatiques aux Organisations —
+                        Solutions d'Infrastructure, Systèmes et Réseaux), je me forme aux métiers de l'administration
+                        réseau et de la sécurité informatique.
+                    </p>
+                    <p>
+                        Mon parcours m'a permis de développer des compétences solides en gestion de parc informatique,
+                        résolution d'incidents, mise en place de services réseau et administration de systèmes.
+                        Je suis à la recherche d'une alternance pour une 3ème année d'études pour mettre en pratique mes acquis.
+                    </p>
+                    <p>
+                        Mon objectif à l'issue du BTS est de poursuivre en <strong>BUT R&T</strong> ou en <strong>Bachelor ASR</strong>
+                        pour approfondir mes connaissances en réseaux et télécommunications.
+                    </p>
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">18+</div>
+                            <div class="stat-label">Projets réalisés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Stages effectués</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Certifications visées</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Motivation</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-info fade-in fade-in-delay-2">
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(102,126,234,0.15); color: #667eea;">🎓</div>
+                        <div>
+                            <div class="info-label">Formation</div>
+                            <div class="info-value">BTS SIO — Option SISR (2ème année)</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(67,233,123,0.15); color: #43e97b;">📍</div>
+                        <div>
+                            <div class="info-label">Localisation</div>
+                            <div class="info-value">France</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(240,147,251,0.15); color: #f093fb;">📧</div>
+                        <div>
+                            <div class="info-label">Email</div>
+                            <div class="info-value">moradi.ilyes@gmail.com</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(79,172,254,0.15); color: #4facfe;">💼</div>
+                        <div>
+                            <div class="info-label">Recherche</div>
+                            <div class="info-value">Alternance — 3ème année d'études</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(250,112,154,0.15); color: #fa709a;">🔧</div>
+                        <div>
+                            <div class="info-label">Spécialisation</div>
+                            <div class="info-value">Infrastructure, Réseaux & Sécurité</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon" style="background: rgba(254,225,64,0.15); color: #fee140;">🎯</div>
+                        <div>
+                            <div class="info-label">Objectif</div>
+                            <div class="info-value">BUT R&T / Bachelor ASR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARCOURS — FUTUR EN PREMIER -->
+    <section id="parcours" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Parcours</div>
+                <h2 class="section-title">Mon parcours académique</h2>
+                <p class="section-desc">
+                    De la STMG au BTS SIO SISR, un parcours orienté vers l'informatique et les réseaux.
+                </p>
+            </div>
+            <div class="timeline">
+                
+                <!-- FUTUR EN PREMIER -->
+                <div class="timeline-item">
+                    <div class="timeline-date">2026 (objectif)</div>
+                    <div class="timeline-title">BUT R&T / Bachelor ASR</div>
+                    <div class="timeline-subtitle">Poursuite d'études en 3ème année</div>
+                    <div class="timeline-desc">
+                        Objectif de poursuite d'études en BUT Réseaux et Télécommunications ou
+                        Bachelor Administration Systèmes et Réseaux pour approfondir les compétences
+                        en architecture réseau, cybersécurité et cloud computing.
+                    </div>
+                    <div class="timeline-tags">
+                        <span class="tag">BUT R&T</span>
+                        <span class="tag">Bachelor ASR</span>
+                        <span class="tag">Cybersécurité</span>
+                        <span class="tag">Cloud</span>
+                    </div>
+                </div>
+
+                <!-- BTS EN COURS -->
+                <div class="timeline-item">
+                    <div class="timeline-date">2024 — 2026</div>
+                    <div class="timeline-title">BTS SIO — Option SISR</div>
+                    <div class="timeline-subtitle">Services Informatiques aux Organisations — Solutions d'Infrastructure, Systèmes et Réseaux</div>
+                    <div class="timeline-desc">
+                        Formation en alternance de compétences techniques : administration réseau, gestion de parc,
+                        sécurité informatique, virtualisation, supervision et support utilisateur.
+                        Deux stages professionnels de 6 semaines réalisés en entreprise.
+                    </div>
+                    <div class="timeline-tags">
+                        <span class="tag">Windows Server</span>
+                        <span class="tag">Linux</span>
+                        <span class="tag">Cisco</span>
+                        <span class="tag">Active Directory</span>
+                        <span class="tag">GLPI</span>
+                        <span class="tag">Virtualisation</span>
+                        <span class="tag">Sécurité</span>
+                    </div>
+                </div>
+
+                <!-- BAC STMG -->
+                <div class="timeline-item">
+                    <div class="timeline-date">2023 — 2024</div>
+                    <div class="timeline-title">BAC STMG — Option SIG</div>
+                    <div class="timeline-subtitle">Sciences et Technologies du Management et de la Gestion — Systèmes d'Information et Gestion</div>
+                    <div class="timeline-desc">
+                        Baccalauréat technologique axé sur les systèmes d'information en entreprise.
+                        Acquisition de bases en gestion de données, analyse de systèmes d'information
+                        et culture numérique professionnelle.
+                    </div>
+                    <div class="timeline-tags">
+                        <span class="tag">SIG</span>
+                        <span class="tag">Bases de données</span>
+                        <span class="tag">Management</span>
+                        <span class="tag">Systèmes d'information</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJETS -->
+    <section id="projets" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Projets</div>
+                <h2 class="section-title">Projets académiques & professionnels</h2>
+                <p class="section-desc">
+                    Présentation des projets réalisés dans le cadre de ma formation, avec contexte,
+                    réflexions et bilans. Cliquez sur "Voir les détails" pour accéder aux documents.
+                </p>
+            </div>
+            <div class="projects-grid">
+
+                <!-- PROJET 1 : OCS / GLPI -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-1);"></div>
+                        <div class="project-context">Projet — Gestion de parc</div>
+                        <div class="project-title">Gestion de parc et support OCS-GLPI</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Mise en place d'un outil d'inventaire automatisé et d'une plateforme de helpdesk.
+                            Permet de recenser le matériel informatique de l'agence GSB et d'offrir un point 
+                            d'entrée unique pour les demandes d'assistance.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/09/2025 — 05/01/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('ocs-glpi')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 2 : ACTIVE DIRECTORY -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-4);"></div>
+                        <div class="project-context">Projet — Administration système</div>
+                        <div class="project-title">Gestion centralisée des utilisateurs</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Centralisation de la gestion des identités pour les nouveaux collaborateurs 
+                            dans un contexte d'entreprise, issus de la fusion via l'Active Directory.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/09/2025 — 05/01/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('active-directory')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 3 : NAGIOS -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-3);"></div>
+                        <div class="project-context">Projet — Supervision</div>
+                        <div class="project-title">Supervision - NAGIOS</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Déploiement d'une solution de surveillance pour monitorer l'état des équipements 
+                            réseau et des serveurs des agences GSB. Configuration d'alertes automatiques.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/09/2025 — 05/01/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('nagios')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 4 : HAPROXY -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-5);"></div>
+                        <div class="project-context">Projet — Haute disponibilité</div>
+                        <div class="project-title">Répartition de charge - HAPROXY</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Mise en œuvre d'un répartiteur de charge pour les serveurs Web dans un contexte 
+                            d'entreprise (GSB). Garantir un accès permanent aux ressources.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/09/2025 — 05/01/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('haproxy')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 5 : IPFIRE -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-2);"></div>
+                        <div class="project-context">Projet — Sécurité réseau</div>
+                        <div class="project-title">Pare-feu - IPFIRE</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Installation et configuration d'une solution de filtrage (IPFire) pour sécuriser 
+                            les agences. Mise en place de règles de flux (ACL) et configuration de Snort.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/09/2025 — 05/01/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('ipfire')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 6 : VLAN / ROUTAGE -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-3);"></div>
+                        <div class="project-context">Projet — Infrastructure réseau</div>
+                        <div class="project-title">Infrastructure réseau et segmentation VLAN</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Mise en œuvre d'une architecture réseau segmentée par VLAN pour isoler les services 
+                            et configuration du routage dynamique (RIP) pour la communication entre sous-réseaux.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">15/09/2025 — 22/12/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('vlan-routage')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 7 : HSRP -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-4);"></div>
+                        <div class="project-context">Projet — Redondance</div>
+                        <div class="project-title">Haute disponibilité passerelle (HSRP + RIP)</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Configuration du protocole de redondance HSRP sur les routeurs de tête pour garantir 
+                            une continuité de service. Basculement automatique en cas de défaillance.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">15/09/2025 — 24/11/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('hsrp')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 8 : GESTION PARC STAGE -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-1);"></div>
+                        <div class="project-context">Stage 1ère année</div>
+                        <div class="project-title">Gestion du parc informatique (PC et smartphones)</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Préparation, attribution et renouvellement des équipements informatiques 
+                            (ordinateurs et téléphones) pour les salariés selon leurs besoins.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/05/2025 — 27/06/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('gestion-parc-stage')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 9 : INVENTAIRE EXCEL -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-2);"></div>
+                        <div class="project-context">Stage 1ère année</div>
+                        <div class="project-title">Suivi et inventaire du matériel (Excel)</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Maintien à jour d'un fichier de suivi recensant les équipements attribués : 
+                            nom des salariés, IMEI des téléphones, modèles et marques utilisés.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/05/2025 — 27/06/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('inventaire-excel')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 10 : LIGNES MOBILES -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-3);"></div>
+                        <div class="project-context">Stage 1ère année</div>
+                        <div class="project-title">Attribution et gestion des lignes mobiles</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Attribution des cartes SIM aux téléphones professionnels et veille à leur 
+                            bon fonctionnement selon les besoins des utilisateurs.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/05/2025 — 27/06/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('lignes-mobiles')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 11 : CONFIG POSTES -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-4);"></div>
+                        <div class="project-context">Stage 1ère année</div>
+                        <div class="project-title">Configuration postes et outils de communication</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Installation et paramétrage des logiciels essentiels, notamment la messagerie 
+                            (Outlook avec protocoles SMTP/IMAP), pour un accès opérationnel aux services.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/05/2025 — 27/06/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('config-postes')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 12 : REDONDANCE CISCO -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-5);"></div>
+                        <div class="project-context">Projet académique</div>
+                        <div class="project-title">Redondance passerelle Cisco (HSRP, RIP)</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Mise en place de redondance de passerelle Cisco pour assurer la continuité 
+                            de service en cas de défaillance matérielle d'un routeur.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">06/01/2025 — 03/02/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('redundance-cisco')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 13 : VEILLE TECHNO -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-6);"></div>
+                        <div class="project-context">Projet transversal</div>
+                        <div class="project-title">Veille Technologique - Journal</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Projet transversal liant veille informationnelle, présence en ligne et 
+                            développement professionnel. Rédaction d'articles de vulgarisation technique.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/06/2024 — 16/01/2025</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('veille-techno')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 14 : CSS ZEN GARDEN -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-1);"></div>
+                        <div class="project-context">Projet design web</div>
+                        <div class="project-title">CSS Zen Garden</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Projet de design web avancé : modifier uniquement le CSS d'une page HTML fixe 
+                            pour en transformer radicalement l'apparence. Maîtrise de Grid, Flexbox, animations.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">07/11/2024 — 19/12/2024</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('css-zen')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 15 : INFRA TeckSio -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-3);"></div>
+                        <div class="project-context">Projet groupe</div>
+                        <div class="project-title">Infrastructure Réseau Entreprise TeckSio</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Projet de simulation d'architecture réseau d'entreprise dans un contexte 
+                            pédagogique avec Cisco Packet Tracer. Conception, routage, sécurité, documentation.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">14/11/2024 — 19/12/2024</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('tecksio')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 16 : SITE HTML PUB -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-2);"></div>
+                        <div class="project-context">Projet web</div>
+                        <div class="project-title">RP 1.1 - Site HTML "Publicité"</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Création d'un site web (HTML et CSS) avec intégration d'espaces publicitaires. 
+                            Travail sur la structure sémantique, le responsive et l'accessibilité.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">12/09/2024 — 07/11/2024</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Lycée</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('site-html-pub')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 17 : ASSISTANCE PERSONNELS -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-4);"></div>
+                        <div class="project-context">Stage 1ère année</div>
+                        <div class="project-title">Assistance aux personnels</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Résolution de problèmes (PC, imprimantes, configuration de PC et téléphone). 
+                            Support utilisateur niveau 1, diagnostic et dépannage matériel/logiciel.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">19/05/2024 — 27/06/2024</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('assistance-personnels')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 18 : LINUX ENTREPRISE -->
+                <div class="project-card" style="grid-column: 1 / -1;">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-5);"></div>
+                        <div class="project-context">Stage 2ème année</div>
+                        <div class="project-title">Évaluation distributions Linux pour entreprise</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Étude et test de plusieurs distributions Linux pour identifier celle pouvant 
+                            remplacer Windows dans l'environnement de l'entreprise. Compatibilité, virtualisation, 
+                            alternatives Microsoft, agents de sécurité.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/02/2026 — 03/04/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('linux-entreprise')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJET 19 : MODES OPÉRATOIRES -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-accent" style="background: var(--gradient-6);"></div>
+                        <div class="project-context">Stage 2ème année</div>
+                        <div class="project-title">Réalisation de modes opératoires</div>
+                    </div>
+                    <div class="project-body">
+                        <p class="project-desc">
+                            Création de guides utilisateurs : nettoyage de messagerie, gestion de l'espace 
+                            disque, bonnes pratiques numériques. Documentation pédagogique pour les collaborateurs.
+                        </p>
+                        <div class="project-details">
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Date</span>
+                                <span class="project-detail-value">23/02/2026 — 03/04/2026</span>
+                            </div>
+                            <div class="project-detail-row">
+                                <span class="project-detail-label">Lieu</span>
+                                <span class="project-detail-value">Stage entreprise</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn-details" onclick="openProjectModal('modes-operatoires')">
+                                🔍 Voir les détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- STAGES -->
+    <section id="stages">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Stages</div>
+                <h2 class="section-title">Expériences professionnelles</h2>
+                <p class="section-desc">
+                    Deux stages réalisés en entreprise durant ma formation, en première et deuxième année de BTS.
+                </p>
+            </div>
+            <div class="stages-grid">
+                <div class="stage-card">
+                    <div class="stage-year">Stage 1ère année — 6 semaines</div>
+                    <div class="stage-title">Technicien support informatique</div>
+                    <div class="stage-company">Oviance — Cournon d'Auvergne</div>
+                    <div class="stage-desc">
+                        Premier stage de découverte du milieu professionnel en entreprise.
+                        J'ai pu observer et participer aux missions du service informatique.
+                    </div>
+                    <div class="stage-tasks">
+                        <div class="stage-task">Assistance aux utilisateurs (niveau 1)</div>
+                        <div class="stage-task">Installation et configuration de postes de travail</div>
+                        <div class="stage-task">Inventaire du parc informatique</div>
+                        <div class="stage-task">Dépannage matériel et logiciel</div>
+                        <div class="stage-task">Rédaction de documentation technique</div>
+                    </div>
+                </div>
+                <div class="stage-card">
+                    <div class="stage-year">Stage 2ème année — 6 semaines</div>
+                    <div class="stage-title">Administrateur système & réseau junior</div>
+                    <div class="stage-company">T2C — Cournon d'Auvergne</div>
+                    <div class="stage-desc">
+                        Stage approfondi avec des responsabilités plus importantes en administration 
+                        système, réseau et sécurité.
+                    </div>
+                    <div class="stage-tasks">
+                        <div class="stage-task">Étude et test de distributions Linux</div>
+                        <div class="stage-task">Tests réalisés</div>
+                        <div class="stage-task">Choix final : Zorin OS</div>
+                        <div class="stage-task">Tests de compatibilité</div>
+                        <div class="stage-task">Automatisation et déploiement</div>
+                        <div class="stage-task">Logistique informatique</div>
+                        <div class="stage-task">Intervention dans les LEX</div>
+                        <div class="stage-task">Rédaction de modes opératoires et documentation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FUTURES ÉTUDES -->
+    <section id="futurs" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Futurs</div>
+                <h2 class="section-title">Poursuite d'études</h2>
+                <p class="section-desc">
+                    Après le BTS SIO SISR, je souhaite continuer en 3ème année pour obtenir un diplôme de niveau Bac+3
+                    en informatique, spécialisé dans les réseaux et télécommunications.
+                </p>
+            </div>
+            <div class="futures-grid">
+                <div class="future-card" style="border-color: rgba(102,126,234,0.2);">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-1); border-radius: 3px 3px 0 0;"></div>
+                    <div class="future-icon" style="background: rgba(102,126,234,0.15);">🎓</div>
+                    <div class="future-title">BUT Réseaux et Télécommunications</div>
+                    <div class="future-school">IUT — 3ème année (entrée directe)</div>
+                    <div class="future-desc">
+                        Le BUT R&T forme des techniciens supérieurs capables de concevoir, installer et administrer
+                        des réseaux d'entreprise. Formation axée sur les protocoles réseau, la cybersécurité,
+                        les télécommunications et le cloud computing.
+                    </div>
+                    <div class="future-tags">
+                        <span class="tag">Réseaux avancés</span>
+                        <span class="tag">Cybersécurité</span>
+                        <span class="tag">Cloud</span>
+                        <span class="tag">Télécoms</span>
+                    </div>
+                </div>
+                <div class="future-card" style="border-color: rgba(240,147,251,0.2);">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-2); border-radius: 3px 3px 0 0;"></div>
+                    <div class="future-icon" style="background: rgba(240,147,251,0.15);">💻</div>
+                    <div class="future-title">Bachelor ASR</div>
+                    <div class="future-school">École spécialisée — Administration Systèmes & Réseaux</div>
+                    <div class="future-desc">
+                        Le Bachelor ASR prépare aux métiers d'administrateur système et réseau.
+                        Formation professionnelle avec alternance possible, axée sur la pratique
+                        et la préparation aux certifications professionnelles (Cisco, Microsoft).
+                    </div>
+                    <div class="future-tags">
+                        <span class="tag">Administration</span>
+                        <span class="tag">Virtualisation</span>
+                        <span class="tag">Certifications</span>
+                        <span class="tag">Alternance</span>
+                    </div>
+                </div>
+                <div class="future-card" style="border-color: rgba(79,172,254,0.2);">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-3); border-radius: 3px 3px 0 0;"></div>
+                    <div class="future-icon" style="background: rgba(79,172,254,0.15);">🛡️</div>
+                    <div class="future-title">Licence Informatique</div>
+                    <div class="future-school">Université — Spécialisation sécurité</div>
+                    <div class="future-desc">
+                        Une licence professionnelle orientée sécurité des systèmes d'information
+                        permettrait de se spécialiser dans la protection des infrastructures,
+                        l'analyse de risques et la réponse aux incidents de sécurité.
+                    </div>
+                    <div class="future-tags">
+                        <span class="tag">Cybersécurité</span>
+                        <span class="tag">Audit</span>
+                        <span class="tag">Forensics</span>
+                        <span class="tag">SSI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section id="certifications">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">// Certifications</div>
+                <h2 class="section-title">Certifications & habilitations</h2>
+                <p class="section-desc">
+                    Certifications obtenues ou en cours dans le cadre de ma formation et de mon développement professionnel.
+                </p>
+            </div>
+            <div class="certs-grid">
+                <div class="cert-card fade-in">
+                    <div class="cert-icon">🏆</div>
+                    <div class="cert-name">Pix Certification</div>
+                    <div class="cert-org">Cadre national de référence</div>
+                    <span class="cert-status obtained">Obtenue</span>
+                </div>
+                <div class="cert-card fade-in fade-in-delay-1">
+                    <div class="cert-icon">🔐</div>
+                    <div class="cert-name">Cisco CCNA (en cours)</div>
+                    <div class="cert-org">Cisco Networking Academy</div>
+                    <span class="cert-status progress">En cours</span>
+                </div>
+                <div class="cert-card fade-in fade-in-delay-2">
+                    <div class="cert-icon">🛡️</div>
+                    <div class="cert-name">SST — Sauveteur Secouriste</div>
+                    <div class="cert-org">Formation professionnelle</div>
+                    <span class="cert-status obtained">Obtenue</span>
+                </div>
+                <div class="cert-card fade-in fade-in-delay-3">
+                    <div class="cert-icon">☁️</div>
+                    <div class="cert-name">Microsoft Azure Fundamentals</div>
+                    <div class="cert-org">Microsoft (AZ-900)</div>
+                    <span class="cert-status planned">Prévue</span>
+                </div>
+                <div class="cert-card fade-in fade-in-delay-4">
+                    <div class="cert-icon">🐧</div>
+                    <div class="cert-name">Linux Essentials</div>
+                    <div class="cert-org">LPI (Linux Professional Institute)</div>
+                    <span class="cert-status planned">Prévue</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">
+                Contact <br>
+                <span style="color: var(--text-muted); font-size: 0.75rem;">@Contact</span>
+            </p>
+            <div class="footer-links">
+                <a href="mailto:moradi.ilyes@gmail.com">Email</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">GitHub</a>
+                <a href="#">CV PDF</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════
+         MODALE PROJET
+    ═══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="projectModal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModalBtn()" aria-label="Fermer">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-accent" id="modalAccent"></div>
+                <div class="modal-context" id="modalContext">Projet académique</div>
+                <h3 class="modal-title" id="modalTitle">Titre du projet</h3>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Contexte -->
+                <div class="modal-section">
+                    <div class="modal-section-title">📋 Contexte</div>
+                    <div class="modal-section-content" id="modalContexte"></div>
+                </div>
+                
+                <!-- Objectifs -->
+                <div class="modal-section">
+                    <div class="modal-section-title">🎯 Objectifs</div>
+                    <div class="modal-section-content" id="modalObjectifs"></div>
+                </div>
+                
+                <!-- Réalisation -->
+                <div class="modal-section">
+                    <div class="modal-section-title">⚙️ Points de réalisation</div>
+                    <div class="modal-section-content" id="modalRealisation"></div>
+                </div>
+                
+                <!-- Difficultés -->
+                <div class="modal-section">
+                    <div class="modal-section-title">⚠️ Difficultés rencontrées</div>
+                    <div class="modal-section-content" id="modalDifficultes"></div>
+                </div>
+                
+                <!-- Compétences (dans la modale uniquement) -->
+                <div class="modal-section">
+                    <div class="modal-section-title">🏆 Compétences BTS SIO mobilisées</div>
+                    <div class="competences-list" id="modalCompetences"></div>
+                </div>
+                
+                <!-- Documents -->
+                <div class="modal-section">
+                    <div class="modal-section-title">📁 Documents & Preuves</div>
+                    <div class="documents-grid" id="modalDocuments">
+                        <!-- Documents dynamiques -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div class="modal-date" id="modalDate"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline btn-sm" id="modalLink" target="_blank">Voir en ligne ↗</button>
+                    <button class="btn btn-primary btn-sm" onclick="downloadProject()">📥 Exporter PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════ -->
+    <script>
+        // ═══════════════════════════════════════════
+        // DONNÉES DES PROJETS
+        // ═══════════════════════════════════════════
+        const projectsData = {
+            "ocs-glpi": {
+                title: "Gestion de parc et support OCS-GLPI",
+                context: "Mise en place d'un outil d'inventaire automatisé et d'une plateforme de helpdesk pour l'agence GSB. Permet de recenser le matériel informatique et d'offrir un point d'entrée unique pour les demandes d'assistance.",
+                objectifs: [
+                    "Installer et configurer OCS Inventory pour l'inventaire réseau",
+                    "Déployer GLPI et le connecter à OCS",
+                    "Configurer les catégories de tickets et les workflows",
+                    "Former les utilisateurs à l'outil"
+                ],
+                realisation: [
+                    "Installation d'OCS Inventory NG sur serveur Linux",
+                    "Déploiement des agents sur les postes clients",
+                    "Configuration de GLPI avec plugins FusionInventory",
+                    "Création de catégories de tickets et règles de routage",
+                    "Documentation utilisateur et procédures de support"
+                ],
+                difficultes: "Gestion fine des droits utilisateurs pour affiner les accès selon les profils. Organisation hiérarchique des salles et entités dans GLPI pour une gestion granulaire.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" },
+                    { code: "F.0", label: "Organiser son développement professionnel", desc: "Mettre en place son environnement d'apprentissage" }
+                ],
+                documents: [
+                    { name: "Schema_architecture.pdf", type: "PDF", icon: "📄" },
+                    { name: "Capture_GLPI_tickets.png", type: "Image", icon: "🖼️" },
+                    { name: "Procedure_installation.md", type: "Doc", icon: "📝" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/09/2025 au 05/01/2026 — Lycée",
+                accent: "var(--gradient-1)",
+                link: "#"
+            },
+            
+            "active-directory": {
+                title: "Gestion centralisée des utilisateurs",
+                context: "Centralisation de la gestion des identités pour les nouveaux collaborateurs dans un contexte d'entreprise, issus de la fusion via l'Active Directory.",
+                objectifs: [
+                    "Installer et promouvoir un contrôleur de domaine AD DS",
+                    "Configurer le service DHCP avec étendues et réservations",
+                    "Créer et lier des GPO pour la gestion des postes",
+                    "Déployer WDS pour l'installation réseau de Windows"
+                ],
+                realisation: [
+                    "Promotion du serveur Windows Server 2019 en contrôleur de domaine",
+                    "Création des OU, groupes de sécurité et comptes utilisateurs",
+                    "Configuration des stratégies de groupe (mots de passe, bureau, restrictions)",
+                    "Déploiement de WDS avec options DHCP 60/66/67 pour PXE"
+                ],
+                difficultes: "La configuration de WDS avec un serveur DHCP existant a nécessité des options DHCP supplémentaires (options 60, 66, 67) et une attention particulière aux conflits de services.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" }
+                ],
+                documents: [
+                    { name: "Schema_AD.png", type: "Image", icon: "🖼️" },
+                    { name: "GPO_appliquees.pdf", type: "PDF", icon: "📄" },
+                    { name: "Script_creation_users.ps1", type: "Code", icon: "💻" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/09/2025 au 05/01/2026 — Lycée",
+                accent: "var(--gradient-4)",
+                link: "#"
+            },
+            
+            "nagios": {
+                title: "Supervision - NAGIOS",
+                context: "Déploiement d'une solution de surveillance pour monitorer l'état des équipements réseau et des serveurs des agences GSB. Configuration d'alertes automatiques pour anticiper les pannes.",
+                objectifs: [
+                    "Installer et configurer Nagios Core sur Linux",
+                    "Configurer les hôtes et services à superviser",
+                    "Paramétrer les notifications et escalades d'alertes",
+                    "Créer un dashboard de supervision"
+                ],
+                realisation: [
+                    "Installation de Nagios Core + plugins sur Debian",
+                    "Configuration des checks CPU, RAM, disque, services",
+                    "Mise en place des notifications email/SMS par seuils",
+                    "Création d'une vue personnalisée avec NagVis"
+                ],
+                difficultes: "La configuration des contacts et des périodes de notification dans Nagios Core est complexe. Documentation officielle insuffisante, recours aux forums communautaires pour les cas spécifiques.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" }
+                ],
+                documents: [
+                    { name: "Dashboard_Nagios.png", type: "Image", icon: "🖼️" },
+                    { name: "Config_hosts.cfg", type: "Code", icon: "💻" },
+                    { name: "Alertes_test.log", type: "Log", icon: "📋" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/09/2025 au 05/01/2026 — Lycée",
+                accent: "var(--gradient-3)",
+                link: "#"
+            },
+            
+            "haproxy": {
+                title: "Répartition de charge - HAPROXY",
+                context: "Mise en œuvre d'un répartiteur de charge pour les serveurs Web dans un contexte d'entreprise (GSB). L'objectif est de garantir un accès permanent aux ressources, même en cas de panne d'un serveur applicatif.",
+                objectifs: [
+                    "Installer et configurer HAProxy en mode reverse proxy",
+                    "Configurer l'équilibrage round-robin entre serveurs",
+                    "Mettre en place les health checks pour détecter les pannes",
+                    "Configurer la persistance de session si nécessaire"
+                ],
+                realisation: [
+                    "Installation d'HAProxy sur Debian/Ubuntu",
+                    "Configuration du frontend/backend avec ACLs",
+                    "Mise en place des checks HTTP pour la disponibilité",
+                    "Tests de basculement et monitoring des performances"
+                ],
+                difficultes: "Gestion de la persistance de session pour les applications stateful. Configuration fine des timeouts pour équilibrer réactivité et stabilité.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" },
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" }
+                ],
+                documents: [
+                    { name: "Config_haproxy.cfg", type: "Code", icon: "💻" },
+                    { name: "Schema_architecture.png", type: "Image", icon: "🖼️" },
+                    { name: "Tests_charge.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/09/2025 au 05/01/2026 — Lycée",
+                accent: "var(--gradient-5)",
+                link: "#"
+            },
+            
+            "ipfire": {
+                title: "Pare-feu - IPFIRE",
+                context: "Installation et configuration d'une solution de filtrage (type IPFire) pour sécuriser les agences. Mise en place de règles de flux (ACL) pour autoriser les applications métiers tout en protégeant le réseau local (LAN) et la zone publique (DMZ).",
+                objectifs: [
+                    "Installer IPFire et configurer les interfaces (GREEN/RED/ORANGE/BLUE)",
+                    "Définir les zones et politiques de sécurité",
+                    "Créer les règles de filtrage par ports et protocoles",
+                    "Activer et configurer Snort (IDS/IPS)"
+                ],
+                realisation: [
+                    "Installation d'IPFire sur machine dédiée/VM",
+                    "Configuration des zones réseau et NAT",
+                    "Création de règles firewall pour applications métiers",
+                    "Activation de Snort avec règles Emerging Threats",
+                    "Tests d'intrusion et ajustement des règles"
+                ],
+                difficultes: "La gestion des règles Snort génère de nombreux faux positifs. Nécessité d'affiner les règles et de créer des suppressions adaptées au contexte métier pour éviter le bruit.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" }
+                ],
+                documents: [
+                    { name: "Regles_firewall.pdf", type: "PDF", icon: "📄" },
+                    { name: "Capture_interface_IPFire.png", type: "Image", icon: "🖼️" },
+                    { name: "Rapport_Snort.log", type: "Log", icon: "📋" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/09/2025 au 05/01/2026 — Lycée",
+                accent: "var(--gradient-2)",
+                link: "#"
+            },
+            
+            "vlan-routage": {
+                title: "Infrastructure réseau et segmentation VLAN",
+                context: "Mise en œuvre d'une architecture réseau segmentée par VLAN pour isoler les services et configuration du routage dynamique (RIP) pour assurer la communication efficace entre les différents sous-réseaux.",
+                objectifs: [
+                    "Concevoir le plan d'adressage IPv4",
+                    "Configurer le routage inter-sites",
+                    "Mettre en place la sécurité des accès",
+                    "Documenter l'architecture complète"
+                ],
+                realisation: [
+                    "Plan d'adressage IPv4 avec subnetting optimisé",
+                    "Configuration des VLAN par service (Admin, Production, Invités)",
+                    "Mise en place du routage inter-VLAN via routeur Cisco",
+                    "Configuration du protocole RIP v2 pour le routage dynamique",
+                    "Documentation technique complète avec schémas"
+                ],
+                difficultes: "La conception du plan d'adressage pour accueillir la croissance future de l'entreprise a nécessité une réflexion sur le subnetting et la scalabilité.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" }
+                ],
+                documents: [
+                    { name: "Schema_VLAN.png", type: "Image", icon: "🖼️" },
+                    { name: "Config_routeurs.txt", type: "Code", icon: "💻" },
+                    { name: "Plan_adressage.xlsx", type: "Tableur", icon: "📊" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "15/09/2025 au 22/12/2025 — Lycée",
+                accent: "var(--gradient-3)",
+                link: "#"
+            },
+            
+            "hsrp": {
+                title: "Haute disponibilité passerelle (HSRP + RIP)",
+                context: "Projet d'infrastructure visant à éliminer les points de défaillance uniques au niveau de la passerelle réseau. Configuration du protocole de redondance HSRP sur les routeurs de tête.",
+                objectifs: [
+                    "Configurer HSRP pour la redondance de passerelle virtuelle",
+                    "Implémenter RIP v2 pour le routage dynamique",
+                    "Tester le basculement automatique (failover)",
+                    "Documenter les configurations"
+                ],
+                realisation: [
+                    "Configuration HSRP avec priorité et préemption",
+                    "Mise en place de RIP v2 avec authentification MD5",
+                    "Tests de basculement avec coupure simulée du routeur actif",
+                    "Monitoring des états HSRP via SNMP",
+                    "Documentation des procédures de maintenance"
+                ],
+                difficultes: "La synchronisation des états HSRP entre routeurs nécessite une attention particulière aux timers et à la priorité pour éviter les basculements intempestifs.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" }
+                ],
+                documents: [
+                    { name: "Config_HSRP.txt", type: "Code", icon: "💻" },
+                    { name: "Test_failover.png", type: "Image", icon: "🖼️" },
+                    { name: "Procedure_maintenance.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "15/09/2025 au 24/11/2025 — Lycée",
+                accent: "var(--gradient-4)",
+                link: "#"
+            },
+            
+            "gestion-parc-stage": {
+                title: "Gestion du parc informatique (PC et smartphones)",
+                context: "Assurer la préparation, l'attribution et le renouvellement des équipements informatiques (ordinateurs et téléphones) pour les salariés, en fonction de leur arrivée, départ ou changement de matériel.",
+                objectifs: [
+                    "Préparer les nouveaux postes pour les arrivées",
+                    "Récupérer et réinitialiser les équipements des départs",
+                    "Gérer les demandes de renouvellement matériel",
+                    "Maintenir un inventaire à jour"
+                ],
+                realisation: [
+                    "Imaging des postes avec outils de déploiement",
+                    "Configuration standardisée des environnements utilisateurs",
+                    "Procédure de récupération et sécurisation des données",
+                    "Mise à jour du fichier de suivi du parc",
+                    "Coordination avec le service RH pour les mouvements"
+                ],
+                difficultes: "Gestion des délais entre départ et arrivée pour optimiser le réemploi du matériel. Coordination avec plusieurs services pour les planning d'équipement.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" }
+                ],
+                documents: [
+                    { name: "Procedure_preparation_PC.pdf", type: "PDF", icon: "📄" },
+                    { name: "Fichier_suivi_parc.xlsx", type: "Tableur", icon: "📊" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/05/2025 au 27/06/2025 — Stage entreprise",
+                accent: "var(--gradient-1)",
+                link: "#"
+            },
+            
+            "inventaire-excel": {
+                title: "Suivi et inventaire du matériel (Excel)",
+                context: "Maintenir à jour un fichier de suivi (Excel) recensant les équipements attribués : nom des salariés, IMEI des téléphones, modèles et marques utilisés.",
+                objectifs: [
+                    "Créer un fichier de suivi structuré et fiable",
+                    "Recenser tous les équipements attribués",
+                    "Faciliter les audits et les renouvellements",
+                    "Assurer la traçabilité des attributions"
+                ],
+                realisation: [
+                    "Conception d'un tableau Excel avec onglets par type de matériel",
+                    "Mise en place de validations de données et listes déroulantes",
+                    "Formules de recherche pour croiser les informations",
+                    "Export PDF pour les rapports périodiques",
+                    "Formation des collègues à l'utilisation du fichier"
+                ],
+                difficultes: "Harmonisation des données provenant de sources différentes. Mise à jour en temps réel avec les mouvements de personnel.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" }
+                ],
+                documents: [
+                    { name: "Modele_suivi_parc.xlsx", type: "Tableur", icon: "📊" },
+                    { name: "Guide_utilisation.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/05/2025 au 27/06/2025 — Stage entreprise",
+                accent: "var(--gradient-2)",
+                link: "#"
+            },
+            
+            "lignes-mobiles": {
+                title: "Attribution et gestion des lignes mobiles",
+                context: "Attribuer des cartes SIM aux téléphones professionnels et veiller à leur bon fonctionnement selon les besoins des utilisateurs.",
+                objectifs: [
+                    "Attribuer les lignes selon les profils utilisateurs",
+                    "Configurer les options et forfaits adaptés",
+                    "Assurer le support en cas de problème de connexion",
+                    "Gérer les changements et résiliations"
+                ],
+                realisation: [
+                    "Analyse des besoins par service et par poste",
+                    "Commande et activation des cartes SIM auprès de l'opérateur",
+                    "Configuration APN et paramètres réseau sur les terminaux",
+                    "Création d'une FAQ pour les utilisateurs",
+                    "Suivi des consommations et alertes de dépassement"
+                ],
+                difficultes: "Gestion des zones à faible couverture réseau. Coordination avec l'opérateur pour les interventions techniques.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" }
+                ],
+                documents: [
+                    { name: "Grille_attribution_lignes.xlsx", type: "Tableur", icon: "📊" },
+                    { name: "FAQ_utilisateurs.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/05/2025 au 27/06/2025 — Stage entreprise",
+                accent: "var(--gradient-3)",
+                link: "#"
+            },
+            
+            "config-postes": {
+                title: "Configuration postes et outils de communication",
+                context: "Installer et paramétrer les logiciels essentiels, notamment la messagerie (Outlook avec protocoles SMTP/IMAP), afin de garantir un accès opérationnel aux services professionnels.",
+                objectifs: [
+                    "Installer les logiciels métiers et bureautiques",
+                    "Configurer la messagerie professionnelle",
+                    "Paramétrer les accès réseau et VPN",
+                    "Former les utilisateurs aux nouveaux outils"
+                ],
+                realisation: [
+                    "Déploiement automatisé via scripts ou GPO",
+                    "Configuration Outlook avec authentification moderne",
+                    "Paramétrage des imprimantes réseau et périphériques",
+                    "Tests de connectivité et validation fonctionnelle",
+                    "Création de guides de prise en main"
+                ],
+                difficultes: "Compatibilité des anciens logiciels avec les nouveaux systèmes. Gestion des droits d'administration locaux.",
+                competences: [
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" }
+                ],
+                documents: [
+                    { name: "Checklist_installation.pdf", type: "PDF", icon: "📄" },
+                    { name: "Config_Outlook.png", type: "Image", icon: "🖼️" },
+                    { name: "Guide_utilisateur.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/05/2025 au 27/06/2025 — Stage entreprise",
+                accent: "var(--gradient-4)",
+                link: "#"
+            },
+            
+            "redundance-cisco": {
+                title: "Redondance passerelle Cisco (HSRP, RIP)",
+                context: "Mise en place de redondance de passerelle Cisco pour assurer la continuité de service en cas de défaillance matérielle d'un routeur.",
+                objectifs: [
+                    "Configurer HSRP pour la redondance de passerelle",
+                    "Implémenter le routage dynamique RIP",
+                    "Tester les scénarios de basculement",
+                    "Documenter la configuration"
+                ],
+                realisation: [
+                    "Configuration HSRP avec priorités et préemption",
+                    "Mise en place de RIP v2 avec authentification",
+                    "Tests de coupure et validation du failover",
+                    "Monitoring via SNMP et logs",
+                    "Documentation technique et procédures"
+                ],
+                difficultes: "Synchronisation des états HSRP et gestion des timers pour éviter les basculements intempestifs.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "F.0", label: "Organiser son développement professionnel", desc: "Mettre en place son environnement d'apprentissage" }
+                ],
+                documents: [
+                    { name: "Config_Cisco_HSRP.txt", type: "Code", icon: "💻" },
+                    { name: "Schema_redundance.png", type: "Image", icon: "🖼️" },
+                    { name: "Rapport_tests.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "06/01/2025 au 03/02/2025 — Lycée",
+                accent: "var(--gradient-5)",
+                link: "#"
+            },
+            
+            "veille-techno": {
+                title: "Veille Technologique - Journal",
+                context: "Projet transversal liant veille informationnelle, présence en ligne et développement professionnel. Rédaction d'articles de vulgarisation technique.",
+                objectifs: [
+                    "Mettre en place une veille informationnelle sur l'actualité IT",
+                    "Rédiger des articles de vulgarisation technique",
+                    "Gérer et animer une présence numérique",
+                    "Développer ses compétences en communication"
+                ],
+                realisation: [
+                    "Sélection de sources fiables (RSS, newsletters, forums)",
+                    "Rédaction d'articles hebdomadaires sur des sujets IT",
+                    "Publication sur plateforme de blog ou réseau professionnel",
+                    "Interaction avec la communauté et retours d'expérience",
+                    "Analyse des statistiques de lecture et engagement"
+                ],
+                difficultes: "Trouver le bon niveau de vulgarisation pour rendre les sujets techniques accessibles à tous les lecteurs.",
+                competences: [
+                    { code: "F.0", label: "Organiser son développement professionnel", desc: "Mettre en place son environnement d'apprentissage personnel" }
+                ],
+                documents: [
+                    { name: "Liste_sources_veille.pdf", type: "PDF", icon: "📄" },
+                    { name: "Article_exemple.md", type: "Doc", icon: "📝" },
+                    { name: "Statistiques_lecture.png", type: "Image", icon: "🖼️" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/06/2024 au 16/01/2025 — Lycée",
+                accent: "var(--gradient-6)",
+                link: "#"
+            },
+            
+            "css-zen": {
+                title: "CSS Zen Garden",
+                context: "Projet de design web avancé : modifier uniquement le CSS d'une page HTML fixe pour en transformer radicalement l'apparence.",
+                objectifs: [
+                    "Maîtriser les animations et transitions CSS",
+                    "Utiliser les propriétés CSS Grid et Flexbox avancées",
+                    "Créer un design original et cohérent",
+                    "Respecter les contraintes techniques imposées"
+                ],
+                realisation: [
+                    "Analyse de la structure HTML fournie",
+                    "Création d'une charte graphique originale",
+                    "Implémentation de layouts complexes avec Grid/Flexbox",
+                    "Ajout d'animations et transitions fluides",
+                    "Optimisation pour le responsive et l'accessibilité"
+                ],
+                difficultes: "La contrainte de ne pas modifier le HTML a imposé une réflexion poussée sur les sélecteurs CSS et la structure existante.",
+                competences: [
+                    { code: "E.0", label: "Développer la présence en ligne", desc: "Concevoir et développer des contenus web" },
+                    { code: "F.0", label: "Organiser son développement professionnel", desc: "Mettre en place son environnement d'apprentissage" }
+                ],
+                documents: [
+                    { name: "Design_final.png", type: "Image", icon: "🖼️" },
+                    { name: "styles.css", type: "Code", icon: "💻" },
+                    { name: "Note_concept.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "07/11/2024 au 19/12/2024 — Lycée",
+                accent: "var(--gradient-1)",
+                link: "#"
+            },
+            
+            "tecksio": {
+                title: "Infrastructure Réseau Entreprise TeckSio",
+                context: "Projet de simulation d'architecture réseau d'entreprise dans un contexte pédagogique avec Cisco Packet Tracer.",
+                objectifs: [
+                    "Concevoir le plan d'adressage IPv4",
+                    "Configurer le routage inter-sites",
+                    "Mettre en place la sécurité des accès",
+                    "Documenter l'architecture complète"
+                ],
+                realisation: [
+                    "Modélisation de l'architecture dans Packet Tracer",
+                    "Plan d'adressage avec VLAN et sous-réseaux",
+                    "Configuration du routage OSPF entre sites",
+                    "Mise en place d'ACL pour la sécurité",
+                    "Documentation technique avec schémas et procédures"
+                ],
+                difficultes: "La conception du plan d'adressage pour accueillir la croissance future de l'entreprise a nécessité une réflexion sur le subnetting et la scalabilité.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" }
+                ],
+                documents: [
+                    { name: "Architecture_PacketTracer.pkt", type: "Fichier", icon: "📦" },
+                    { name: "Schema_reseau.png", type: "Image", icon: "🖼️" },
+                    { name: "Documentation.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "14/11/2024 au 19/12/2024 — Lycée",
+                accent: "var(--gradient-3)",
+                link: "#"
+            },
+            
+            "site-html-pub": {
+                title: "RP 1.1 - Site HTML \"Publicité\"",
+                context: "Création d'un site web (HTML et CSS) avec intégration d'espaces publicitaires. Travail sur la structure sémantique, le responsive et l'accessibilité.",
+                objectifs: [
+                    "Créer une structure HTML sémantique et valide",
+                    "Intégrer un design responsive avec CSS",
+                    "Ajouter des espaces publicitaires aux formats standards",
+                    "Respecter les normes d'accessibilité web"
+                ],
+                realisation: [
+                    "Maquettage préalable sur papier/Figma",
+                    "Codage HTML5 avec balises sémantiques",
+                    "Stylisation CSS avec Flexbox/Grid",
+                    "Intégration de bannières publicitaires responsives",
+                    "Tests d'accessibilité avec outils automatisés"
+                ],
+                difficultes: "Équilibrer l'intégration publicitaire avec l'expérience utilisateur et les performances de chargement.",
+                competences: [
+                    { code: "E.0", label: "Développer la présence en ligne", desc: "Concevoir et développer des contenus web" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" }
+                ],
+                documents: [
+                    { name: "Maquette_Figma.png", type: "Image", icon: "🖼️" },
+                    { name: "index.html", type: "Code", icon: "💻" },
+                    { name: "styles.css", type: "Code", icon: "💻" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "12/09/2024 au 07/11/2024 — Lycée",
+                accent: "var(--gradient-2)",
+                link: "#"
+            },
+            
+            "assistance-personnels": {
+                title: "Assistance aux personnels",
+                context: "Résolution de problèmes (PC, imprimantes, configuration de PC et téléphone). Support utilisateur niveau 1, diagnostic et dépannage matériel/logiciel.",
+                objectifs: [
+                    "Diagnostiquer rapidement les incidents signalés",
+                    "Résoudre les problèmes courants de poste de travail",
+                    "Orienter vers le niveau 2 si nécessaire",
+                    "Documenter les solutions pour la base de connaissances"
+                ],
+                realisation: [
+                    "Accueil et qualification des demandes utilisateurs",
+                    "Diagnostic à distance ou en présentiel",
+                    "Résolution : réinstallation, configuration, dépannage matériel",
+                    "Rédaction de fiches solutions réutilisables",
+                    "Suivi de la satisfaction utilisateur"
+                ],
+                difficultes: "Gestion des demandes urgentes en parallèle. Communication avec des utilisateurs non-techniciens.",
+                competences: [
+                    { code: "B.0", label: "Répondre aux incidents", desc: "Collecter, suivre et orienter des demandes" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" }
+                ],
+                documents: [
+                    { name: "Fiche_solution_imprimante.pdf", type: "PDF", icon: "📄" },
+                    { name: "Checklist_diagnostic.pdf", type: "PDF", icon: "📄" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "19/05/2024 au 27/06/2024 — Stage entreprise",
+                accent: "var(--gradient-4)",
+                link: "#"
+            },
+            
+            "linux-entreprise": {
+                title: "Évaluation distributions Linux pour entreprise",
+                context: "Étude et test de plusieurs distributions Linux pour identifier celle pouvant remplacer Windows dans l'environnement de l'entreprise. Compatibilité, virtualisation, alternatives Microsoft, agents de sécurité.",
+                objectifs: [
+                    "Comparer les distributions Linux pour leur compatibilité avec Windows",
+                    "Tester l'exécution des applications Windows via Wine/VM",
+                    "Identifier des alternatives aux outils Microsoft",
+                    "Installer et configurer des agents de sécurité (FortiClient, antivirus)",
+                    "Évaluer la stabilité et la sécurité pour un déploiement"
+                ],
+                realisation: [
+                    "Installation de Ubuntu, Debian, Rocky Linux en VM",
+                    "Tests de compatibilité avec applications métiers (.exe, WinDev)",
+                    "Configuration de Wine et PlayOnLinux pour l'émulation",
+                    "Déploiement d'alternatives : LibreOffice, Thunderbird, Nextcloud",
+                    "Installation d'agents de sécurité et tests de conformité",
+                    "Rédaction d'un rapport comparatif avec recommandations"
+                ],
+                difficultes: "Faire fonctionner toutes les applications Windows .exe et développements internes (WinDev) malgré Wine et PlayOnLinux. Compatibilité des agents de sécurité avec certaines distributions.",
+                competences: [
+                    { code: "A.5", label: "Gérer le patrimoine informatique", desc: "Vérifier le respect des règles d'utilisation des ressources numériques" },
+                    { code: "D.0", label: "Travailler en mode projet", desc: "Analyser les objectifs et les modalités d'organisation d'un projet" },
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" }
+                ],
+                documents: [
+                    { name: "Rapport_comparatif_Linux.pdf", type: "PDF", icon: "📄" },
+                    { name: "Test_compatibilite_apps.xlsx", type: "Tableur", icon: "📊" },
+                    { name: "Procedure_installation_agents.md", type: "Doc", icon: "📝" },
+                    { name: "Capture_bureau_Ubuntu.png", type: "Image", icon: "🖼️" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/02/2026 au 03/04/2026 — Stage entreprise",
+                accent: "var(--gradient-5)",
+                link: "#"
+            },
+            
+            "modes-operatoires": {
+                title: "Réalisation de modes opératoires",
+                context: "Création de guides utilisateurs : nettoyage de messagerie, gestion de l'espace disque, bonnes pratiques numériques. Documentation pédagogique pour les collaborateurs.",
+                objectifs: [
+                    "Identifier les besoins de documentation des utilisateurs",
+                    "Rédiger des guides clairs et illustrés",
+                    "Valider la compréhension avec des tests utilisateurs",
+                    "Diffuser et maintenir à jour la documentation"
+                ],
+                realisation: [
+                    "Recueil des besoins auprès des services",
+                    "Rédaction des modes opératoires avec captures d'écran",
+                    "Mise en forme professionnelle (PDF, intranet)",
+                    "Tests de compréhension avec utilisateurs pilotes",
+                    "Mise en ligne et communication sur la disponibilité"
+                ],
+                difficultes: "Adapter le niveau de détail pour être complet sans être trop technique. Maintenir la documentation à jour avec les évolutions logicielles.",
+                competences: [
+                    { code: "C.0", label: "Mettre à disposition un service", desc: "Assurer la disponibilité des services informatiques" }
+                ],
+                documents: [
+                    { name: "Mode_operatoire_messagerie.pdf", type: "PDF", icon: "📄" },
+                    { name: "Guide_gestion_disque.pdf", type: "PDF", icon: "📄" },
+                    { name: "Template_documentation.docx", type: "Doc", icon: "📝" },
+                    { name: "Ajouter...", type: "upload", icon: "➕" }
+                ],
+                date: "23/02/2026 au 03/04/2026 — Stage entreprise",
+                accent: "var(--gradient-6)",
+                link: "#"
+            }
+        };
+
+        // ═══════════════════════════════════════════
+        // GESTION DES MODALES PROJETS
+        // ═══════════════════════════════════════════
+
+        function openProjectModal(projectId) {
+            const project = projectsData[projectId];
+            if (!project) return;
+            
+            document.getElementById('modalAccent').style.background = project.accent;
+            document.getElementById('modalContext').textContent = "Projet académique";
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalContexte').textContent = project.context;
+            
+            document.getElementById('modalObjectifs').innerHTML = 
+                '<ul>' + project.objectifs.map(o => `<li>${o}</li>`).join('') + '</ul>';
+            
+            document.getElementById('modalRealisation').innerHTML = 
+                '<ul>' + project.realisation.map(r => `<li>${r}</li>`).join('') + '</ul>';
+            
+            document.getElementById('modalDifficultes').textContent = project.difficultes;
+            
+            const competencesHtml = project.competences.map(c => 
+                `<div class="competence-tag" title="${c.desc}">
+                    <span class="code">${c.code}</span>
+                    <span>${c.label}</span>
+                </div>`
+            ).join('');
+            document.getElementById('modalCompetences').innerHTML = competencesHtml;
+            
+            const documentsHtml = project.documents.map(doc => {
+                if (doc.type === 'upload') {
+                    return `<div class="document-card document-add" onclick="addDocument('${projectId}')">
+                        <div class="document-icon">${doc.icon}</div>
+                        <div class="document-name">${doc.name}</div>
+                    </div>`;
+                }
+                return `<div class="document-card" onclick="viewDocument('${doc.name}')">
+                    <div class="document-icon">${doc.icon}</div>
+                    <div class="document-name">${doc.name}</div>
+                    <div class="document-type">${doc.type}</div>
+                </div>`;
+            }).join('');
+            document.getElementById('modalDocuments').innerHTML = documentsHtml;
+            
+            document.getElementById('modalDate').textContent = project.date;
+            const linkBtn = document.getElementById('modalLink');
+            if (project.link && project.link !== '#') {
+                linkBtn.href = project.link;
+                linkBtn.style.display = 'inline-flex';
+            } else {
+                linkBtn.style.display = 'none';
+            }
+            
+            document.getElementById('projectModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (event.target.id === 'projectModal' || event.target.classList.contains('modal-close')) {
+                closeModalBtn();
+            }
+        }
+
+        function closeModalBtn() {
+            document.getElementById('projectModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModalBtn();
+        });
+
+        function viewDocument(docName) {
+            alert(`📂 Ouverture de : ${docName}\n\nConfigurez le chemin réel dans la fonction viewDocument().`);
+        }
+
+        function addDocument(projectId) {
+            alert(`📤 Ajouter un document pour : ${projectsData[projectId].title}\n\nÀ implémenter avec upload backend.`);
+        }
+
+        function downloadProject() {
+            alert(`📥 Export PDF\n\nÀ implémenter avec librairie jsPDF ou génération côté serveur.`);
+        }
+
+        // ═══════════════════════════════════════════
+        // SCRIPTS EXISTANTS
+        // ═══════════════════════════════════════════
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1400);
+        });
+
+        const cursorGlow = document.getElementById('cursorGlow');
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                cursorGlow.style.left = e.clientX + 'px';
+                cursorGlow.style.top = e.clientY + 'px';
+            });
+        } else {
+            cursorGlow.style.display = 'none';
+        }
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .timeline-item, .project-card, .stage-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.color = 'var(--text-primary)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
